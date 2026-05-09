@@ -1,0 +1,52 @@
+[
+  {
+    "id": "fam1",
+    "title": "Welcome Baby Patterson",
+    "description": "Prepare our hearts, home, and schedules for the newest member of our family",
+    "category": "Family",
+    "targetDate": "2026-10-01",
+    "status": "in-progress",
+    "progress": 45,
+    "nextAction": "Finalise birth plan with midwife"
+  },
+  {
+    "id": "fam2",
+    "title": "Monthly Date Nights",
+    "description": "Commit to at least one proper date night per month — restaurant, cinema, or something new",
+    "category": "Family",
+    "targetDate": "2026-12-31",
+    "status": "in-progress",
+    "progress": 33,
+    "nextAction": "Book May dinner at new restaurant in the city"
+  },
+  {
+    "id": "fam3",
+    "title": "Family Traditions",
+    "description": "Establish 3 meaningful family traditions before baby's first Christmas",
+    "category": "Family",
+    "targetDate": "2026-12-25",
+    "status": "not-started",
+    "progress": 0,
+    "nextAction": "Brainstorm traditions together over dinner"
+  },
+  {
+    "id": "fam4",
+    "title": "Antenatal Classes",
+    "description": "Complete a full antenatal course together — be prepared and confident",
+    "category": "Family",
+    "targetDate": "2026-08-31",
+    "status": "not-started",
+    "progress": 0,
+    "nextAction": "Enrol in local hospital antenatal program"
+  },
+  {
+    "id": "fam5",
+    "title": "Digital Photo Album",
+    "description": "Create a curated photo album of our pre-baby chapter — Europe, pregnancy, home",
+    "category": "Family",
+    "targetDate": "2026-11-30",
+    "status": "not-started",
+    "progress": 0,
+    "nextAction": "Choose a photo book service and start selecting images"
+  }
+]

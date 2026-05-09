@@ -1,0 +1,10 @@
+[
+  { "id": "v1", "title": "Our Forever Home", "description": "A warm, light-filled family home with a garden and room to grow", "emoji": "🏡", "color": "gold" },
+  { "id": "v2", "title": "Financial Freedom", "description": "Investments working for us so we have choices, not obligations", "emoji": "📈", "color": "green" },
+  { "id": "v3", "title": "Healthy & Present", "description": "Active, well-rested, and genuinely present for each other and our baby", "emoji": "🌿", "color": "sage" },
+  { "id": "v4", "title": "World Explorers", "description": "Raising a child who grows up with stamps in their passport and wonder in their eyes", "emoji": "✈️", "color": "blue" },
+  { "id": "v5", "title": "Strong Partnership", "description": "A marriage built on laughter, honesty, and showing up for each other every day", "emoji": "💛", "color": "gold" },
+  { "id": "v6", "title": "Creative Home", "description": "A space that reflects who we are — beautiful, personal, and full of life", "emoji": "🎨", "color": "rose" },
+  { "id": "v7", "title": "Career Growth", "description": "Work that's meaningful, flexible, and rewards us well for our effort", "emoji": "🚀", "color": "purple" },
+  { "id": "v8", "title": "Family Legacy", "description": "Building something — memories, values, wealth — that outlasts us", "emoji": "🌳", "color": "green" }
+]

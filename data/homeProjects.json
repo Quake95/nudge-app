@@ -1,0 +1,46 @@
+[
+  {
+    "id": "h1",
+    "title": "Nursery Setup",
+    "description": "Design and furnish the nursery — calming, gender-neutral, and functional",
+    "category": "Home",
+    "targetDate": "2026-08-15",
+    "status": "in-progress",
+    "progress": 30,
+    "nextAction": "Order cot and change table this weekend",
+    "budget": "$4,500"
+  },
+  {
+    "id": "h2",
+    "title": "Kitchen Refresh",
+    "description": "New handles, splashback, and lighting to modernise without a full reno",
+    "category": "Home",
+    "targetDate": "2026-03-31",
+    "status": "complete",
+    "progress": 100,
+    "nextAction": "Done! Enjoy the new kitchen.",
+    "budget": "$3,200"
+  },
+  {
+    "id": "h3",
+    "title": "Backyard Tidy",
+    "description": "Level the lawn, add a garden bed, and build a small deck area for outdoor entertaining",
+    "category": "Home",
+    "targetDate": "2026-11-30",
+    "status": "not-started",
+    "progress": 0,
+    "nextAction": "Get 3 quotes from landscapers",
+    "budget": "$8,000"
+  },
+  {
+    "id": "h4",
+    "title": "Master Bathroom Update",
+    "description": "Replace vanity, retile shower, and upgrade fixtures for a spa-like feel",
+    "category": "Home",
+    "targetDate": "2027-03-01",
+    "status": "not-started",
+    "progress": 10,
+    "nextAction": "Collect inspiration images and set a budget",
+    "budget": "$15,000"
+  }
+]

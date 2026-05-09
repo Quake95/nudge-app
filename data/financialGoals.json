@@ -1,0 +1,74 @@
+[
+  {
+    "id": "f1",
+    "title": "Emergency Fund",
+    "description": "3-month emergency buffer before baby arrives — fully funded across offset and accounts",
+    "category": "Financial",
+    "targetDate": "2026-06-30",
+    "status": "complete",
+    "progress": 100,
+    "nextAction": "Review and reconfirm allocation after baby arrives",
+    "target": "$15,000",
+    "current": "$15,000+"
+  },
+  {
+    "id": "f2",
+    "title": "Offset Account Growth",
+    "description": "Grow the offset account to reduce mortgage interest and strengthen our overall position",
+    "category": "Financial",
+    "targetDate": "2026-12-31",
+    "status": "complete",
+    "progress": 100,
+    "nextAction": "Review with mortgage broker for next property purchase",
+    "target": "$80,000",
+    "current": "$839,238"
+  },
+  {
+    "id": "f3",
+    "title": "Baby Fund",
+    "description": "Dedicated savings for baby's first year — gear, medical costs, and parental leave gap",
+    "category": "Financial",
+    "targetDate": "2026-08-01",
+    "status": "in-progress",
+    "progress": 80,
+    "nextAction": "Transfer remaining amount to dedicated baby savings account",
+    "target": "$10,000",
+    "current": "$8,000"
+  },
+  {
+    "id": "f4",
+    "title": "ETF Investment Plan",
+    "description": "Automatic monthly ETF contributions — set and forget wealth building",
+    "category": "Financial",
+    "targetDate": "2026-03-31",
+    "status": "complete",
+    "progress": 100,
+    "nextAction": "Review allocation in December",
+    "target": "$500/month",
+    "current": "Active"
+  },
+  {
+    "id": "f5",
+    "title": "Life Insurance Review",
+    "description": "Update life and income protection policies before baby arrives",
+    "category": "Financial",
+    "targetDate": "2026-07-31",
+    "status": "not-started",
+    "progress": 0,
+    "nextAction": "Book appointment with financial adviser",
+    "target": "Reviewed & updated",
+    "current": "Not started"
+  },
+  {
+    "id": "f6",
+    "title": "Clear the Mortgage",
+    "description": "Pay down and clear the mortgage entirely. Offset currently covers 77% of the outstanding balance — net exposure ~$245K.",
+    "category": "Financial",
+    "targetDate": "2030-12-31",
+    "status": "in-progress",
+    "progress": 77,
+    "nextAction": "Review refinancing options mid-2026, keep growing offset",
+    "target": "$1,084,894",
+    "current": "$839,239"
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "t1",
+    "title": "Europe — Last Hurrah",
+    "description": "Two weeks in Italy and France before the baby arrives. Our last big adventure as a duo.",
+    "category": "Travel",
+    "targetDate": "2026-04-30",
+    "status": "in-progress",
+    "progress": 70,
+    "nextAction": "Book Rome day tours",
+    "destinations": ["Rome", "Amalfi Coast", "Paris"],
+    "budget": "$12,000"
+  },
+  {
+    "id": "t2",
+    "title": "Queensland Babymoon",
+    "description": "A relaxed long weekend in Noosa or Byron before third trimester kicks in",
+    "category": "Travel",
+    "targetDate": "2026-06-15",
+    "status": "not-started",
+    "progress": 0,
+    "nextAction": "Search accommodation in Noosa for June long weekend",
+    "destinations": ["Noosa"],
+    "budget": "$2,500"
+  },
+  {
+    "id": "t3",
+    "title": "Japan — Family Trip",
+    "description": "Tokyo, Kyoto and Osaka when bub is old enough — target 2028 but start dreaming now",
+    "category": "Travel",
+    "targetDate": "2028-04-01",
+    "status": "not-started",
+    "progress": 5,
+    "nextAction": "Add to vision board and start Japan travel fund",
+    "destinations": ["Tokyo", "Kyoto", "Osaka"],
+    "budget": "$18,000"
+  },
+  {
+    "id": "t4",
+    "title": "Hunter Valley Weekend",
+    "description": "A quiet wine weekend — just the two of us — to celebrate our anniversary",
+    "category": "Travel",
+    "targetDate": "2026-09-20",
+    "status": "not-started",
+    "progress": 0,
+    "nextAction": "Lock in dates and ask parents about babysitting",
+    "destinations": ["Hunter Valley"],
+    "budget": "$1,800"
+  }
+]
