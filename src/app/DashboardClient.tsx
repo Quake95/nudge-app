@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import GoalCard from '@/components/GoalCard'
 import SectionHeader from '@/components/SectionHeader'
@@ -16,7 +16,7 @@ import { Goal, VisionItem, ActionItem } from '@/components/types'
 import visionBoardData from '../../data/visionBoard.json'
 import nextActionsData from '../../data/nextActions.json'
 
-const GOALS_KEY = 'fgd-goals-v2'
+const COUPLE_KEY = 'nudge-couple-id'
 const PROFILE_KEY = 'fgd-profile'
 
 const sections = [
@@ -30,6 +30,7 @@ export default function DashboardClient() {
   const router = useRouter()
   const [view, setView] = useState<'dashboard' | 'timeline'>('dashboard')
   const [goals, setGoals] = useState<Goal[]>([])
+  const [coupleId, setCoupleId] = useState<string | null>(null)
   const [coupleName, setCoupleName] = useState('Your Board')
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null)
   const [addingCategory, setAddingCategory] = useState<string | null>(null)
@@ -37,12 +38,13 @@ export default function DashboardClient() {
   const [importOpen, setImportOpen] = useState(false)
   const [smsOpen, setSmsOpen] = useState(false)
   const [hydrated, setHydrated] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const id = localStorage.getItem(COUPLE_KEY)
     const profile = localStorage.getItem(PROFILE_KEY)
-    const stored = localStorage.getItem(GOALS_KEY)
 
-    if (!profile && !stored) {
+    if (!id) {
       router.push('/onboard')
       return
     }
@@ -52,14 +54,35 @@ export default function DashboardClient() {
       setCoupleName(p.coupleName || `${p.yourName} & ${p.partnerName}`)
     }
 
-    if (stored) setGoals(JSON.parse(stored))
-    setHydrated(true)
+    setCoupleId(id)
+
+    // Load goals from Supabase
+    fetch(`/api/goals?coupleId=${id}`)
+      .then(r => r.json())
+      .then(data => {
+        setGoals(data.goals ?? [])
+        setLoading(false)
+        setHydrated(true)
+      })
+      .catch(() => {
+        setLoading(false)
+        setHydrated(true)
+      })
   }, [router])
 
-  const saveGoals = (updated: Goal[]) => {
-    setGoals(updated)
-    localStorage.setItem(GOALS_KEY, JSON.stringify(updated))
-  }
+  const saveGoals = useCallback(async (updated: Goal[]) => {
+    setGoals(updated) // optimistic update — UI feels instant
+    if (!coupleId) return
+    try {
+      await fetch('/api/goals', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ coupleId, goals: updated }),
+      })
+    } catch {
+      // silently fail — goals are still in state
+    }
+  }, [coupleId])
 
   const handleSave = (goal: Goal) => {
     if (editingGoal) {
@@ -70,8 +93,12 @@ export default function DashboardClient() {
     closeModal()
   }
 
-  const handleDelete = (id: string) => {
-    saveGoals(goals.filter(g => g.id !== id))
+  const handleDelete = async (id: string) => {
+    const updated = goals.filter(g => g.id !== id)
+    setGoals(updated)
+    if (coupleId) {
+      await fetch(`/api/goals?coupleId=${coupleId}&goalId=${id}`, { method: 'DELETE' })
+    }
     closeModal()
   }
 
@@ -116,7 +143,7 @@ export default function DashboardClient() {
       {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-[#FAF7F2]/90 backdrop-blur-sm border-b border-stone-200">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
-          <span className="font-serif text-stone-800 font-medium shrink-0 text-sm tracking-wide uppercase">nudge</span>
+          <span className="font-serif text-stone-800 font-medium shrink-0 text-sm tracking-widest uppercase">nudge</span>
 
           {/* View Toggle */}
           <div className="flex bg-stone-100 rounded-full p-1 gap-1">
@@ -174,19 +201,26 @@ export default function DashboardClient() {
         <p className="text-xs font-semibold tracking-widest uppercase text-yellow-500 mb-4">Private · Family · 2026</p>
         <h1 className="font-serif text-5xl md:text-7xl font-medium text-stone-800 mb-6">{coupleName}</h1>
         <p className="font-serif text-xl md:text-2xl italic text-stone-500 mb-12">Your 2026 Family Board</p>
-        <div className="inline-flex flex-wrap justify-center gap-8 bg-white rounded-2xl px-10 py-6 shadow-sm border border-stone-100">
-          {[
-            { label: 'Total Goals', value: totalGoals },
-            { label: 'In Progress', value: inProgress },
-            { label: 'Complete', value: complete },
-            { label: 'Avg Progress', value: `${avgProgress}%` },
-          ].map(stat => (
-            <div key={stat.label} className="text-center">
-              <div className="font-serif text-3xl font-medium text-stone-800">{stat.value}</div>
-              <div className="text-xs text-stone-400 mt-1">{stat.label}</div>
-            </div>
-          ))}
-        </div>
+
+        {loading ? (
+          <div className="flex justify-center">
+            <div className="w-8 h-8 border-2 border-stone-200 border-t-stone-400 rounded-full animate-spin" />
+          </div>
+        ) : (
+          <div className="inline-flex flex-wrap justify-center gap-8 bg-white rounded-2xl px-10 py-6 shadow-sm border border-stone-100">
+            {[
+              { label: 'Total Goals', value: totalGoals },
+              { label: 'In Progress', value: inProgress },
+              { label: 'Complete', value: complete },
+              { label: 'Avg Progress', value: `${avgProgress}%` },
+            ].map(stat => (
+              <div key={stat.label} className="text-center">
+                <div className="font-serif text-3xl font-medium text-stone-800">{stat.value}</div>
+                <div className="text-xs text-stone-400 mt-1">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <CheckInBanner goals={goals} onApply={handleApplyUpdate} />

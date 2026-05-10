@@ -4,17 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Goal } from './types'
 
-const GOALS_KEY = 'fgd-goals-v2'
+const COUPLE_KEY = 'nudge-couple-id'
 const PROFILE_KEY = 'fgd-profile'
-
-interface Profile {
-  yourName: string
-  partnerName: string
-  location: string
-  kids: string
-  mainGoal: string
-  coupleName: string
-}
 
 const kidsOptions = [
   { value: '0', label: 'No kids yet' },
@@ -50,19 +41,18 @@ export default function OnboardingFlow() {
   const [form, setForm] = useState({
     yourName: '',
     partnerName: '',
+    email: '',
     location: '',
     kids: '',
     mainGoal: '',
   })
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [generatedGoals, setGeneratedGoals] = useState<Goal[]>([])
   const [coupleName, setCoupleName] = useState('')
+  const [saving, setSaving] = useState(false)
 
   const set = (field: string, value: string) =>
     setForm(f => ({ ...f, [field]: value }))
-
-  const stepIndex = steps.indexOf(step)
 
   const handleGenerate = async () => {
     setStep('generating')
@@ -88,14 +78,49 @@ export default function OnboardingFlow() {
     }
   }
 
-  const handleEnter = () => {
-    const profile: Profile = {
-      ...form,
-      coupleName: coupleName || `${form.yourName} & ${form.partnerName}`,
+  const handleEnter = async () => {
+    setSaving(true)
+    setError('')
+    try {
+      // 1. Create couple in Supabase
+      const coupleRes = await fetch('/api/couples', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          yourName: form.yourName,
+          partnerName: form.partnerName,
+          coupleName: coupleName || `${form.yourName} & ${form.partnerName}`,
+          location: form.location,
+          kids: form.kids,
+          email: form.email,
+        }),
+      })
+      if (!coupleRes.ok) throw new Error('Failed to save profile')
+      const { couple } = await coupleRes.json()
+
+      // 2. Save generated goals to Supabase
+      await fetch('/api/goals', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ coupleId: couple.id, goals: generatedGoals }),
+      })
+
+      // 3. Store session in localStorage (couple_id is the session key)
+      localStorage.setItem(COUPLE_KEY, couple.id)
+      localStorage.setItem(PROFILE_KEY, JSON.stringify({
+        yourName: form.yourName,
+        partnerName: form.partnerName,
+        coupleName: coupleName || `${form.yourName} & ${form.partnerName}`,
+        location: form.location,
+        kids: form.kids,
+        email: form.email,
+      }))
+
+      router.push('/')
+    } catch {
+      setError('Something went wrong saving your board. Try again.')
+      setSaving(false)
     }
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile))
-    localStorage.setItem(GOALS_KEY, JSON.stringify(generatedGoals))
-    router.push('/')
   }
 
   return (
@@ -112,7 +137,7 @@ export default function OnboardingFlow() {
             {step === 'about' && 'Tell us about you.'}
             {step === 'goal' && 'What matters most?'}
             {step === 'generating' && 'Building your board…'}
-            {step === 'preview' && `Here's your\nstarter board.`}
+            {step === 'preview' && 'Here\'s your starter board.'}
           </h1>
           {!['generating', 'preview'].includes(step) && (
             <p className="text-stone-400 text-sm mt-2 font-serif italic">
@@ -123,7 +148,7 @@ export default function OnboardingFlow() {
           )}
         </div>
 
-        {/* Step: Names */}
+        {/* Step: Names + Email */}
         {step === 'names' && (
           <div className="flex flex-col gap-4">
             <ProgressDots current={0} />
@@ -148,9 +173,21 @@ export default function OnboardingFlow() {
                 placeholder="e.g. Steph"
               />
             </div>
+            <div>
+              <label className="block text-xs font-medium text-stone-500 uppercase tracking-wide mb-1.5">
+                Your email <span className="text-stone-300 normal-case font-normal">(to restore your board on any device)</span>
+              </label>
+              <input
+                type="email"
+                value={form.email}
+                onChange={e => set('email', e.target.value)}
+                className="w-full border border-stone-200 rounded-xl px-4 py-3 text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300"
+                placeholder="e.g. you@example.com"
+              />
+            </div>
             <button
               onClick={() => setStep('about')}
-              disabled={!form.yourName.trim() || !form.partnerName.trim()}
+              disabled={!form.yourName.trim() || !form.partnerName.trim() || !form.email.trim()}
               className="w-full py-3.5 bg-stone-800 text-white rounded-xl font-medium hover:bg-stone-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed mt-2"
             >
               Continue →
@@ -237,7 +274,7 @@ export default function OnboardingFlow() {
               </button>
               <button
                 onClick={handleGenerate}
-                disabled={!form.mainGoal.trim() || loading}
+                disabled={!form.mainGoal.trim()}
                 className="flex-1 py-3.5 bg-stone-800 text-white rounded-xl font-medium hover:bg-stone-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 ✦ Build my board
@@ -286,15 +323,26 @@ export default function OnboardingFlow() {
               ))}
             </div>
 
+            {error && <p className="text-sm text-red-500">{error}</p>}
+
             <button
               onClick={handleEnter}
-              className="w-full py-4 bg-stone-800 text-white rounded-xl font-medium hover:bg-stone-700 transition-colors mt-2 text-base"
+              disabled={saving}
+              className="w-full py-4 bg-stone-800 text-white rounded-xl font-medium hover:bg-stone-700 transition-colors mt-2 text-base disabled:opacity-60 flex items-center justify-center gap-2"
             >
-              Enter your dashboard →
+              {saving ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Saving your board…
+                </>
+              ) : (
+                'Enter your dashboard →'
+              )}
             </button>
 
             <button
               onClick={() => setStep('goal')}
+              disabled={saving}
               className="text-sm text-stone-400 hover:text-stone-600 transition-colors text-center"
             >
               ← Start over
